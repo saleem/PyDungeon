@@ -21,3 +21,12 @@ To run: python3 ./pydungeon.py
 |CBM PET DUNGEON|PyDungeon (dungeon memory map dump)|
 :--------------:|:-----------------:
 <img src="https://pbs.twimg.com/media/EZUIm_7WAAA0QpL?format=png&name=900x900" width=400>|<img src="https://pbs.twimg.com/media/EZUIcPkWoAMG0nK?format=png&name=900x900" height=400>
+
+
+## Tests
+
+The unit tests are in files whose names begin with `test_`. This naming convention makes it easy to run all of them at once: 
+
+`python3 -m unittest test_*` 
+
+See [Python unittest documentation](https://docs.python.org/3/library/unittest.html) for details.

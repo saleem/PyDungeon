@@ -10,6 +10,7 @@ import sys
 from time import sleep
 from math import sqrt
 import curses
+from curses import wrapper
 
 WIDTH = 40
 HEIGHT = 23
@@ -607,4 +608,5 @@ def main(screen):
             sys.exit(0)
 
 # Safely start/end curses windowing
-curses.wrapper(main)
+if __name__ == "__main__":
+    curses.wrapper(main)
