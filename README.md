@@ -1,3 +1,5 @@
+![](https://github.com/saleem/PyDungeon/workflows/PyDungeon/badge.svg)
+
 # PyDungeon
 
 UPDATE: 6/5/20 - With this last checkin and merge to master branch, I've achieved all my goals. 
@@ -29,4 +31,12 @@ The unit tests are in files whose names begin with `test_`. This naming conventi
 
 `python3 -m unittest test_*` 
 
+Because of the reliance on some specific assertion methods in unittest, the code is no longer compatible with Python 3.5.
+
 See [Python unittest documentation](https://docs.python.org/3/library/unittest.html) for details.
+
+## Continuous Integration
+
+CI is done via [github actions](https://github.com/features/actions).
+
+Currently, the CI includes linting and testing. Linting does not fail the build. It probably should -- however, that would require [fixing some linting errors](https://github.com/saleem/PyDungeon/runs/747829462?check_suite_focus=true) that are non-trivial but do not (yet) adversely affect program behavior.
