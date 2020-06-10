@@ -1,8 +1,7 @@
 # Simulating what goes on in the memory structure
 # of DUNGEON
 
-from random import random, randint, choice
-import sys
+from random import random, choice
 from os import system, name
 
 WIDTH = 40
@@ -11,14 +10,20 @@ RM_GEN_RETRIES = 50
 DESIRED_RMS = 8
 ASCII_a = ord("a")
 t_vars = {}
-MONSTERS = ["R","G","D","S","N","W"]
+MONSTERS = ["R", "G", "D", "S", "N", "W"]
 FLOOR = "."
 DOOR = "+"
 GOLD = "g"
 BORDER = "*"
-RS=23; CS=40; SZ=RS*CS; BL=(25-RS)*40 ; RS=RS-1; CS=CS-1
+RS = 23
+CS = 40
+SZ = RS * CS
+BL = (25 - RS) * 40
+RS = RS - 1
+CS = CS-1
 
-def draw_memory(data, vars_dict, step=""):
+
+def draw_memory(data, vars_dict, step = ""):
     cls()     # Works only if run from true terminal, not from IDE
 
     # Draw the board data structure
@@ -120,12 +125,6 @@ def gen_dungeon(TS, SZ):
         # 400 W=INT(RND(1)*9+2):L=INT(RND(1)*9+2)
         # 410 R0=INT(RND(1)*(RS-L-1))+1:C0=INT(RND(1)*(CS-W-1))+1:P=TS+40*R0+C0
         # 420 IFP+40*L+W>=TS+SZTHEN530
-
-        # This was a check to see if the room in the data structure would go over
-        # the boundaries (end point) of the area of memory allocated. (TS+SZ)
-        if P+40*L+W >= TS+SZ:
-            fail_on_size += 1
-            continue
 
         # t_vars["W"] = W; t_vars["L"] = L
         # t_vars["R0"] = R0; t_vars["C0"] = C0; t_vars["P"] = P
