@@ -10,7 +10,6 @@ import sys
 from time import sleep
 from math import sqrt
 import curses
-from curses import wrapper
 
 WIDTH = 40
 HEIGHT = 23
@@ -25,12 +24,12 @@ NUM_HIDDEN_GOLD = 11
 BORDER = "*"
 PLAYER = "@"
 VALIDMOVES = "qs123456789"
-MOVEMAP = [(0,0), (-1,1), (0,1), (1,1), (-1,0), (0,0), (1,0), (-1,-1), (0,-1), (1,-1)]
+MOVEMAP = [(0, 0), (-1, 1), (0, 1), (1, 1), (-1, 0), (0, 0), (1, 0), (-1, -1), (0, -1), (1, -1)]
 PRINT_PAUSE = 1
 WINDOWS_KEYPAD = ["n/a", "key_c1", "key_c2", "key_c3", "key_b1", "key_b2",
-    "key_b3", "key_a1", "key_a2", "key_a3"]
+                    "key_b3", "key_a1", "key_a2", "key_a3"]
 LINUX_KEYPAD = ["n/a", "key_end", "key_down", "key_npage", "key_left",
-    "n/a", "key_right", "key_home", "key_up", "key_ppage"]
+                    "n/a", "key_right", "key_home", "key_up", "key_ppage"]
 STATUS_ROW = 0
 MESSAGE_ROW = 1
 
@@ -98,9 +97,9 @@ def message_update(screen, msg, reversed=False):
 def get_player_move(screen, game_state):
     screen.addstr(STATUS_ROW, 0,
       "HIT PTS. {}  EXP. {}  GOLD {}".format(
-        int(game_state.player_HP+.5),
-        game_state.player_experience,
-        game_state.player_gold))
+            int(game_state.player_HP+.5),
+            game_state.player_experience,
+            game_state.player_gold))
 
     move = "X"
     while not move in VALIDMOVES:
@@ -155,7 +154,7 @@ def generate_rooms(map):
     max_rooms = DESIRED_RMS + choice((-1, 0, 1))
 
     # Keep generating rooms until we've hit a limit of DESIRED_RMS(+/- 1) rooms
-    for rooms_generated in range(0,max_rooms):
+    for rooms_generated in range(0, max_rooms):
         room_width = 0
         room_height = 0
         roomX = 0
@@ -166,7 +165,7 @@ def generate_rooms(map):
         bad_room = True
         while bad_room:
             room_width = randint(2, ROOM_SIZE_MAX)
-            room_height = randint(2 ,ROOM_SIZE_MAX)
+            room_height = randint(2, ROOM_SIZE_MAX)
             # Starting at 1 because 0 is always the border and we want a gap of
             # at least a space around things.
             roomX = randint(2, WIDTH - 1)
@@ -198,11 +197,11 @@ def generate_rooms(map):
 
         # Generate vertical passages from generated room down.
         passageX = roomX + randint(0, room_width)
-        for row in range(roomY+room_height + 1, HEIGHT - 2):
+        for row in range(roomY + room_height + 1, HEIGHT - 2):
             if map[passageX][row] not in (BLANK, BORDER, DOOR):
-                for passageY in range(roomY+room_height+1, row):
-                    map[passageX][passageY]=FLOOR
-                map[passageX][row-1]=DOOR
+                for passageY in range(roomY + room_height + 1, row):
+                    map[passageX][passageY] = FLOOR
+                map[passageX][row - 1] = DOOR
                 break
 
         # Generate horizontal passages from generated room right.
@@ -235,7 +234,7 @@ def gen_dungeon():
 
     # Create border around map
     for x in range(0, WIDTH):
-        for y in range(0,HEIGHT):
+        for y in range(0, HEIGHT):
             if x == 0 or y == 0 or x == WIDTH - 1 or y == HEIGHT - 1:
                 map[x][y] = BORDER
 
@@ -245,9 +244,10 @@ def gen_dungeon():
     for N in range(1, NUM_HIDDEN_GOLD+1):
         is_floor = False
         while not is_floor:
-            goldX = randint(1, WIDTH - 1); goldY = randint(1, HEIGHT - 1)
+            goldX = randint(1, WIDTH - 1)
+            goldY = randint(1, HEIGHT - 1)
             is_floor = (map[goldX][goldY] == FLOOR)
-        map[goldX][goldY]=GOLD
+        map[goldX][goldY] = GOLD
 
     return map
 
@@ -302,7 +302,7 @@ def what_is_seen(screen, game_state):
                     game_state.monster_level = 2
                 elif whats_here == "N":
                     game_state.monster_name = "Nuibus"
-                    game_state.monster_level=9
+                    game_state.monster_level = 9
                 elif whats_here == "W":
                     game_state.monster_name = "Wyvern"
                     game_state.monster_level = 5
@@ -317,8 +317,8 @@ def what_is_seen(screen, game_state):
                 # HP will change each time we see this monster. Heh.
                 game_state.monster_hp = game_state.monster_level = \
                     int(random() * game_state.player_HP +
-                        (game_state.player_experience / game_state.monster_level) +
-                            game_state.player_HP / 4)
+                    (game_state.player_experience / game_state.monster_level) +
+                    game_state.player_HP / 4)
 
                 # If we've already revealed a monster, put it back on the
                 # dungeon map.
@@ -339,7 +339,8 @@ def what_is_seen(screen, game_state):
 def monster_move(screen, game_state):
     pX, pY = game_state.player_locX, game_state.player_locY
     mX, mY = game_state.monster_locX, game_state.monster_locY
-    dirX = 0; dirY = 0
+    dirX = 0
+    dirY = 0
 
     if pX == mX and pY != mY:
         if pY < mY:
@@ -384,7 +385,7 @@ def monster_move(screen, game_state):
 
 def attack(screen, game_state):
     message_update(screen, "AN ATTACK!", True)
-    player_power = game_state.player_HP+game_state.player_experience
+    player_power = game_state.player_HP + game_state.player_experience
     monster_attack = random() * game_state.monster_hp / 2 + game_state.monster_hp / 4
     player_attack=random() * player_power / 2 + player_power / 4
     game_state.monster_hp = int(game_state.monster_hp-player_attack)
@@ -397,7 +398,7 @@ def attack(screen, game_state):
         if (game_state.monster_hp / game_state.player_HP + 1) > 2:
             message_update(screen,
                 "The {} will leave, IF you will give it half your gold.".format(
-                    game_state.monster_name))
+                game_state.monster_name))
             responded = False
             answer = ""
             while not responded:
@@ -559,7 +560,7 @@ def main(screen):
             if map_move:
                 moveX, moveY = MOVEMAP[move]
                 locX, locY = game.player_locX, game.player_locY
-                if (game.dungeon_map[locX+moveX][locY+moveY] == BLANK \
+                if (game.dungeon_map[locX+moveX][locY+moveY] == BLANK
                     and game.shift_mode != 1) or \
                         (game.dungeon_map[locX + moveX][locY + moveY] == BORDER):
                     continue
