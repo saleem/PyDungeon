@@ -1,6 +1,7 @@
 import unittest
+from sys import maxsize
 from unittest.mock import MagicMock
-from pydungeon import get_input, MESSAGE_ROW, GameState, monster_move, init_map
+from pydungeon import get_input, MESSAGE_ROW, GameState, monster_move, init_map, get_player_move
 
 
 class TestPyDungeon(unittest.TestCase):
@@ -67,3 +68,19 @@ class TestPyDungeon(unittest.TestCase):
 
         # Assert
         self.assertEqual(game_state.player_map[0][0], 'X', "Player map should contain 'X' at (0,0) after monster move")
+
+    def test_get_player_move(self):
+        # Arrange
+        mX = 20
+        mY = 10
+        game_state = GameState()
+        game_state.shift_mode = maxsize  # this should be overridden if test passes
+        mock_window = MagicMock()
+        mock_window.getkey.side_effect = ["A", "B", "Q"]   # only "Q" is a valid move
+        mock_window.getmaxyx.return_value = (mY, mX)
+
+        # Act
+        input = get_player_move(mock_window, game_state)
+
+        self.assertEqual(input, "q", "Should ignore invalid inputs and return lowercase valid input")
+        self.assertEqual(game_state.shift_mode, 0, "Shift mode should be set to 0")

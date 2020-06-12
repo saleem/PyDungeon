@@ -5,11 +5,11 @@
 # source. I am doing this for educational purposes to demonstrate computer
 # history and what it might look like in modern programming.
 
-from random import random, randint, choice
-import sys
-from time import sleep
-from math import sqrt
 import curses
+import sys
+from math import sqrt
+from random import choice, randint, random
+from time import sleep
 
 WIDTH = 40
 HEIGHT = 23
@@ -26,10 +26,8 @@ PLAYER = "@"
 VALIDMOVES = "qs123456789"
 MOVEMAP = [(0, 0), (-1, 1), (0, 1), (1, 1), (-1, 0), (0, 0), (1, 0), (-1, -1), (0, -1), (1, -1)]
 PRINT_PAUSE = 1
-WINDOWS_KEYPAD = ["n/a", "key_c1", "key_c2", "key_c3", "key_b1", "key_b2",
-                    "key_b3", "key_a1", "key_a2", "key_a3"]
-LINUX_KEYPAD = ["n/a", "key_end", "key_down", "key_npage", "key_left",
-                    "n/a", "key_right", "key_home", "key_up", "key_ppage"]
+WINDOWS_KEYPAD = ["n/a", "key_c1", "key_c2", "key_c3", "key_b1", "key_b2", "key_b3", "key_a1", "key_a2", "key_a3"]
+LINUX_KEYPAD = ["n/a", "key_end", "key_down", "key_npage", "key_left", "n/a", "key_right", "key_home", "key_up", "key_ppage"]
 STATUS_ROW = 0
 MESSAGE_ROW = 1
 
@@ -95,14 +93,13 @@ def message_update(screen, msg, reversed=False):
 
 
 def get_player_move(screen, game_state):
-    screen.addstr(STATUS_ROW, 0,
-      "HIT PTS. {}  EXP. {}  GOLD {}".format(
+    screen.addstr(STATUS_ROW, 0, "HIT PTS. {}  EXP. {}  GOLD {}".format(
             int(game_state.player_HP+.5),
             game_state.player_experience,
             game_state.player_gold))
 
     move = "X"
-    while not move in VALIDMOVES:
+    while move not in VALIDMOVES:
         move = get_input(screen, "You may move. ")
 
     # Check to see if the move is one of the special
@@ -317,8 +314,8 @@ def what_is_seen(screen, game_state):
                 # HP will change each time we see this monster. Heh.
                 game_state.monster_hp = game_state.monster_level = \
                     int(random() * game_state.player_HP +
-                    (game_state.player_experience / game_state.monster_level) +
-                    game_state.player_HP / 4)
+                        (game_state.player_experience / game_state.monster_level) +
+                        game_state.player_HP / 4)
 
                 # If we've already revealed a monster, put it back on the
                 # dungeon map.
@@ -387,7 +384,7 @@ def attack(screen, game_state):
     message_update(screen, "AN ATTACK!", True)
     player_power = game_state.player_HP + game_state.player_experience
     monster_attack = random() * game_state.monster_hp / 2 + game_state.monster_hp / 4
-    player_attack=random() * player_power / 2 + player_power / 4
+    player_attack = random() * player_power / 2 + player_power / 4
     game_state.monster_hp = int(game_state.monster_hp-player_attack)
     game_state.player_HP = int(game_state.player_HP-monster_attack)
 
@@ -396,9 +393,10 @@ def attack(screen, game_state):
         # If monster is twice as strong as player, it will make
         # an offer that the player can't refuse...
         if (game_state.monster_hp / game_state.player_HP + 1) > 2:
-            message_update(screen,
+            message_update(
+                screen,
                 "The {} will leave, IF you will give it half your gold.".format(
-                game_state.monster_name))
+                    game_state.monster_name))
             responded = False
             answer = ""
             while not responded:
@@ -411,9 +409,9 @@ def attack(screen, game_state):
                 remove_monster(game_state)
                 return
         elif game_state.monster_hp > 0:
-            message_update(screen,
-                "The {} has {} hit points".format(game_state.monster_name,
-                                                game_state.monster_hp))
+            message_update(
+                screen,
+                "The {} has {} hit points".format(game_state.monster_name, game_state.monster_hp))
             return
         else:
             # The monster is dead
